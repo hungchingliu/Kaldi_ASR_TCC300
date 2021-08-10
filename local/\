@@ -1,0 +1,54 @@
+# -*- coding: utf-8 -*-
+import jieba
+import os
+import sys
+stopwords = [" ", "，", "。"]
+
+def frame_to_time(frame):
+    if frame == 0:
+        return 0
+    else:
+        return (frame * 10 + 20) / 1000.0
+
+def parse_text(file, path):
+    path = sys.path.join(path, file) 
+    with open("text", 'w+', encoding="utf-8") as text, \
+    open("segments", 'w+', encoding="utf-8") as segment, \
+    open(path, 'r', encoding="big5") as f:
+
+        first_line = f.readline()
+        _, file_id, sentence_num = first_line.split()
+        speaker_id = file_id[0:5]
+        utt_id = file_id[5:]
+
+        for i in range(int(sentence_num)):
+            info = f.readline().split()
+            sentence = f.readline()
+            _ = f.readline()
+            _ = f.readline()
+
+            for stopword in stopwords:
+                sentence = sentence.replace(stopword, "")
+
+            word_list = jieba.cut(sentence)
+
+            text.write(file + "_" + "{:0>2d}".format(i))
+            text.write(" " + " ".join(word_list) + "\n")
+
+            segment.write(file + "_" + "{:0>2d}".format(i))
+            segment.write(" " + file)
+
+            start_frame, frame_length = int(info[1]), int(info[2])
+            end_frame = start_frame + frame_length
+            start_time = frame_to_time(start_frame)
+            end_time = frame_to_time(end_frame)
+            segment.write(" " + str(start_time) + " "+  str(end_time) + "\n")
+
+
+if __name__  == "__main__":
+    if len(sys.argv) == 2:
+        path = sys.argv[1]
+        for file in os.listdir(path):
+            if file[-4:] == ".TAB":
+                print(file)
+                parse_text(file, path)
