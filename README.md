@@ -6,6 +6,11 @@ Training recipe is mainly based on Kaldi Formosa project (kaldi/egs/formosa)
 Write some python scripts to generate the demanding files for training
 
 (see https://hackmd.io/hSqBEALiRkqqTD1djdWWzQ?view)
+## Clone the project
+please clone under the Kaldi relative file path because the two directories, steps and utils, symbolic link relatively to kaldi/egs/yesno
+```sh
+clone at kaldi/egs/anyname/
+```
 ## Start Training
 1. fix file name errors in TCC300 corpus
 
