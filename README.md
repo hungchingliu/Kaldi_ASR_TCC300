@@ -16,7 +16,7 @@ TAB file format F010101_0.TAB : X_XX_XX_XX_0.TAB Gender_School_Speaker_Utterance
 
 WAV file formate F010101_0.WAV : X_XX_XX_XX_0.WAV Gender_School_Speaker_Utterance_0.WAV
 ```
-3. fix TCC corpus file path in local/data_preprocess.sh
+3. change TCC corpus file path to local path in local/data_preprocess.sh
 
 ```sh
 python3 local/rename_data.py /opt/TCC300/tcc300/ data/all/TAB -> 
@@ -26,7 +26,7 @@ python3 local/rename_data.py $(tcc_path) data/all/TAB
 python3 local/rename_wav.py /opt/TCC300/tcc300/WAV data/all/WAV -> 
 python3 local/rename_wav.py $(tcc_path) data/all/WAV
 ```
-3. fix pinyin and hanyu filepath in prepare_text_segment_lexicon.py
+3. change pinyin and hanyu filepath to local path in prepare_text_segment_lexicon.py
 
 ```python
 with open("/opt/asraData/chinese/pinyinTable.txt", 'r', encoding="big5") -> 
