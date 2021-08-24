@@ -2,6 +2,7 @@
 import jieba
 import os
 import sys
+import re
 stopwords = ["，", "。", "、", "？", "：", "；", "「", "」", "！", "˙", "（", "）", "˙", "．", "•",\
              "《", "》", "︰", "Ｘ", "－"]
 chinese_tones = ["ˇ", "ˋ", "ˊ", "˙"]
@@ -66,14 +67,20 @@ def parse_TAB(file, path, out_path):
             _ = f.readline()
             pinyin = f.readline()
 
-            for stopword in stopwords:
-                sentence = sentence.replace(stopword, "")
-                sentence = sentence.replace(" ", "")
-                pinyin = pinyin.replace(stopword, "")
+            sentence = sentence.replace(" ", "")
+            sentence_split_reg = "[" + "".join(stopwords) + " ]"
 
-            word_list = jieba.cut(sentence)
-            sentence = " ".join(word_list)
-            words = sentence.split()
+            sentence = re.split(sentence_split_reg, sentence)
+
+            sentence_after_cut = ""
+            for fragment in sentence:
+                word_list = jieba.cut(fragment)
+                sentence_after_cut += " ".join(word_list) + " "
+
+            words = sentence_after_cut.split()
+
+            for stopword in stopwords:
+                pinyin = pinyin.replace(stopword, "")
             pinyins = pinyin.split()
 
             pinyin_index = 0
@@ -84,9 +91,9 @@ def parse_TAB(file, path, out_path):
                 word_phonemes = pinyin2phonemes(word_pinyin)
                 lexicon[word] = word_phonemes
 
-
+            sentence_out = " ".join(words) + "\n"
             text.write(file[:-4] + "_" + "{:0>2d}".format(i))
-            text.write(" " + sentence)
+            text.write(" " + sentence_out)
 
             segment.write(file[:-4] + "_" + "{:0>2d}".format(i))
             segment.write(" " + file[:-4])
