@@ -1,1 +1,6 @@
-data/
+data
+exp
+mfcc
+mfcc_perturbed
+mfcc_perturbed_hires
+out

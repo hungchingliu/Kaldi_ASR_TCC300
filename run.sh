@@ -33,16 +33,27 @@ if [ $stage -le -2 ]; then
   rm -rf data/lang
   utils/prepare_lang.sh --position-dependent-phones false data/local/dict \
       "<SIL>" data/local/lang data/lang || exit 1;
-
   # LM training
   echo "$0: LM training"
   rm -rf data/local/lm/3gram-mincount
   local/train_lms.sh || exit 1;
+<<COMMENT
+  rm -rf data/local/lm
+  mkdir data/local/lm
+
+  /opt/kaldi/tools/srilm/lm/bin/i686-m64/ngram-count \
+      -text data/local/train/text -write data/local/lm/lm.cnt -order 3 || exit 1;
+  /opt/kaldi/tools/srilm/lm/bin/i686-m64/ngram-count -read data/local/lm/lm.cnt \
+      -lm data/local/lm/trigram.lm -unk -order 3 || exit 1;
+  gzip -c data/local/lm/trigram.lm > data/local/lm/trigram.lm.gz || exit 1;
+COMMENT
 
   # G compilation, check LG composition
   echo "$0: G compilation, check LG composition"
   utils/format_lm.sh data/lang data/local/lm/3gram-mincount/lm_unpruned.gz \
       data/local/dict/lexicon.txt data/lang_test || exit 1;
+  #./utils/format_lm.sh data/lang data/local/lm/trigram.lm.gz \
+  #    data/local/dict/lexicon.txt data/lang_test || exit 1;
 
 fi
 
@@ -186,11 +197,11 @@ fi
   # local/nnet3/run_tdnn.sh
 #fi
 
-# chain model
+# chai5 model
 if [ $stage -le 7 ]; then
   # The iVector-extraction and feature-dumping parts coulb be skipped by setting "--train_stage 7"
   echo "$0: train chain model"
-  #local/chain/run_tdnn.sh
+  local/chain/run_tdnn.sh
 fi
 
 # getting results (see RESULTS file)

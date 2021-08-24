@@ -30,11 +30,13 @@ utils/fix_data_dir.sh data/all
 echo "Preparing train and temp data"
 # test set: F0206 F0207 F0208 F0209 M0206 M0207 M0208 M0209 
 grep -E "(F0210|M0210|F0105|M0105|M0104)" data/all/utt2spk | awk '{print $2}' > data/all/cv.spk
+#grep -E "(F0102|M0102|F0103|M0103|F0104|M0104|F0105|M0105|F0207|M0207|F0208|M0208|F0209|M0209|F0210|M0210)" data/all/utt2spk | awk '{print $2}' > data/all/cv.spk
 utils/subset_data_dir_tr_cv.sh --cv-spk-list data/all/cv.spk data/all data/train data/temp
 
 echo "Preparing test and eval data"
 # eval set:
 grep -E "(F0210|M0210)" data/temp/utt2spk | awk '{print $2}' > data/temp/cv.spk
+#grep -E "(F0102|M0102|F0103|M0103|F0104|M0104|F0105|M0105)" data/temp/utt2spk | awk '{print $2}' > data/temp/cv.spk
 utils/subset_data_dir_tr_cv.sh --cv-spk-list data/temp/cv.spk data/temp data/test data/eval
 rm -rf data/temp
 
